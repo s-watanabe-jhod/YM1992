@@ -1,0 +1,7 @@
+  TOTAL NUMBER OF DATA =         410
+  SETUP JACOBI MTRX. LSOURCE=            1  NBI=         297
+  USED MODEL FUNCTION/IUS=            1          27           1          11
+  SET MODEL PARAMETERS. JB=          594  JSP=          594
+  IBOC(1/CONSTRAIN TO OUTSIDE,0/NO COSTRAIN)=           0           0           0           1
+  CONSTRAIN MATRIX JCP=          594
+  MAXIMUM OUTPUT GRID POINTS(1-D)(MLG) =           36

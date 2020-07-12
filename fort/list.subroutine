@@ -1,0 +1,326 @@
+ inv2d22.f:      SUBROUTINE OUT2DP(FLF,IU)
+ inv2d22.f:      SUBROUTINE SABIC2D
+ inv2d22.f:      SUBROUTINE FREE2D(DETF,RSQ2,JDATA,JCT,JMT)
+ inv2d22.f:      SUBROUTINE RESET2D(ALPHA,DETC,JDATA,JCT,JMT)
+ inv2d22.f:      SUBROUTINE INSURD(IU)
+ inv2d22.f:      SUBROUTINE SETKN
+ inv2d22.f:      SUBROUTINE SETBM2D
+
+
+!== inv2d.f // ctpin.f blms.f qrdec.f 
+INV2D inv2d22.f
+	SETA2D ctpin.f
+	SETFC2D ctpin.f
+	STTRANS() blms.f
+		!C*******************************************************
+		!	[PHI,DELT] => [T11,T12,U11,U12]=[cosPHI,sinPHI,cosDELT,sinDELT]
+		!C*******************************************************
+	STAREA() blms.f
+		!C*******************************************************
+		!	ADLT = 0 のときのみ実行
+		!		PLTXY(ALAT,ALON,X,Y,0)
+		!		TRANS(X,Y,XA,YA,1,1)
+		!	        XB=XA+ALEN
+		!	        YB=YA+AWID
+		!	ADLT /= 0 のとき STOP
+		!C*******************************************************
+		PLTXY(ALAT,ALONG,X,Y,IND) blms.f
+			!C*******************************************************
+			!C     PLTXY TRANSFORMS (X,Y) TO (ALAT,ALONG) IF IND.EQ.1
+			!C     PLTXY TRANSFORMS (ALAT,ALONG) TO (X,Y) IF IND.EQ.0
+			!C  WHEN ICORD.NE.0  PLTXY MAKES NO CHANGE IN TRANSFORMATION  BETWEEN (X,Y) AND (ALAT,ALONG).
+			!C*******************************************************
+		TRANS(U,V,UT,VT,IAB,IND) blms.f
+			!	OUTPUT (UT,VT)
+			!C*******************************************************
+			!C (IAB,IND)
+			!C (1, 1):  X-Y COODINATE rotation APHI deg counter-clockwisely.
+			!C             Transform from LOCAL COOD. to FAULT COOD.
+			!C (1,-1):  X-Y COODINATE rotation APHI deg clockwisely.
+			!C             Transform from FAULT COOD. to LOCAL COOD.
+			!C (2, 1):  Y-Z COODINATE rotation ADLT deg counter-clockwisely.
+			!C             Transform from FAULT Cood. to ModelSurface COOD.
+			!C (2,-1):  Y-Z COODINATE rotation ADLT deg clockwisely.
+			!C             Transform from ModelSurface COOD. to FAULT COOD>
+			!C*******************************************************
+	INSURD inv2d22.f
+		[PLTXY blms.f]
+		[TRANS blms.f]
+	SETKN inv2d22.f
+		WHERE1 blms.f
+		BSVALI blms.f
+			BSPLINE blms.f
+		BSPARI blms.f
+	SETBM2D inv2d22.f
+	SABIC2D() inv2d22.f
+		RESET2D inv2d22.f
+		FREE2D inv2d22.f
+			QRDEC qrdec.f
+			RINV qrdec.f
+	OUT2DP(FLF,IU) inv2d22.f
+
+!== intp2d.f // ctpin.f blms.f 
+INTP2D intp2d.f
+	[SETA2D ctpin.f]
+	[SETFC2D ctpin.f]
+	[STTRANS blms.f]
+	[STAREA blms.f]
+		[PLTXY blms.f]
+		[TRANS blms.f]
+	INP2DP blms.f
+	FC2DF(ALA,ALG,X,Y,Z) intp2d.f
+		[PLTXY blms.f]
+		[TRANS blms.f]
+		INTDEP blms.f
+			[WHERE1 blms.f]
+			[BSVALI blms.f]
+				[BSPLINE blms.f]
+			[BSPARI blms.f]
+
+
+
+!== gdjac.f // ctpin.f blms.f jaclib.f
+GDJAC gdjac.f
+	SETA ctpin.f
+		[PLTXY blms.f]
+	OBSPO(IU) jaclib.f
+	SETFCP(LSOURCE,FL1,FL2,FL21,CJA,IPL) ctpin.f
+	[STTRANS blms.f]
+	BLMS blms.f
+		[STAREA blms.f]
+			[PLTXY blms.f]
+			[TRANS blms.f]
+		STMSAR blms.f
+			[PLTXY blms.f]
+			[TRANS blms.f]
+		[INP2DP blms.f]
+		MESH blms.f
+			[INTDEP blms.f]
+				[WHERE1 blms.f]
+				[BSVALI blms.f]
+					[BSPLINE blms.f]
+				[BSPARI blms.f]
+			MNEWT blms.f
+				AREA2 blms.f
+				[INTDEP blms.f]
+					[WHERE1 blms.f]
+					[BSVALI blms.f]
+						[BSPLINE blms.f]
+					[BSPARI blms.f]
+			[AREA2 blms.f]
+			[MNEWT blms.f]
+				[AREA2 blms.f]
+				[INTDEP blms.f]
+					[WHERE1 blms.f]
+					[BSVALI blms.f]
+						[BSPLINE blms.f]
+					[BSPARI blms.f]
+		STMSAR2 blms.f
+			[PLTXY blms.f]
+			[TRANS blms.f]
+		MESHSS blms.f
+	BIBSP() jaclib.f
+		[BSPLINE blms.f]
+	OUTPAR(FL3,CJA,LSOURCE,IU) jaclib.f
+	JACOBI(IU) gdjac.f
+		HORDS(XS,YS) jaclib.f
+			MKKN(DS,GF,CNORM,KFE,NBI,NBDEG,KS0,KT0) jaclib.f
+		DSITRNS() jaclib.f
+			[TRANS blms.f]
+		OUTJC(IDTYP,IU) jaclib.f
+		VERDS(XS,YS) jaclib.f
+			[MKKN jaclib.f]
+		[OUTJC jaclib.f]
+		SLIPM() jaclib.f
+			[MKKN jaclib.f]
+		SMITRNS() jaclib.f
+			[TRANS blms.f]
+		OUTMSL(IU) jaclib.f
+
+
+!== gdinv4.f nnls.f mtphy.f はここのみ。その他、ctpin.f blms.f gdinv.f qrdec.f 
+GDINV gdinv4.f
+	SETCP(HD,FL3,CAL,FMP,NSOURCE) ctpin.f
+	INPUTD(IU) gdinv4.f
+		[PLTXY blms.f]
+		SETAG(KIO,KIS,ITOTAL,IH,IA,IB,IC,NR,NST,AG,ST) gdinv4.f
+	SETUP(FL3,NSOURCE,ICM) gdinv4.f
+		INITIAL() gdinv4.f
+		INPUTG(CJA,FL3,JUST,NBI,LS,IU) gdinv4.f
+		SETMP(KS0,KT0,NDG,IUS,JUST,LS) gdinv4.f
+		SETBM(LS,KS0,KT0,NDG,IUS,IBOC,JUST) gdinv4.f
+		INSL(RSS,NBI,LS) gdinv4.f
+		INNG(RS,NBI,LS,KTYP) gdinv4.f
+		[INNG gdinv4.f]
+	SETWT() gdinv4.f
+	CHGPM() nnls.f
+	SABICM(ICM,ISEL) gdinv4.f
+		RESET(ALPHA,DETC,JDATA,JCT,JMT) gdinv4.f
+		FREEMIN(DETF,RSQ2,JDATA,JCT,JMT) gdinv4.f
+			[QRDEC qrdec.f]
+			[RINV qrdec.f]
+		INEQMIN(DETF,RSQ2,JMT) nnls.f
+			[RINV qrdec.f]
+			LPDSOL(W,RA,KA,JMTA,INQ,EG,FS,UX,WK1,WK2,LA,LB) nnls.f
+				NNLS(EL,FS,UX,IUNA,IULA,IIQ,EG,FB,U,P,LA,LB) nnls.f
+					LSQS(EG,FB,P,IUNA,IULA,JM,LB,U) nnls.f
+						[QRDEC qrdec.f]
+						[RINV qrdec.f]
+			[RINV qrdec.f]
+			[QRDEC qrdec.f]
+	DRESID() gdinv4.f
+	OUTDAT(HD) gdinv4.f
+	COVAR() gdinv4.f
+		[RINV qrdec.f]
+	CHGIMP() nnls.f
+	OUTSOL(HD,FL3,NSOURCE) gdinv4.f
+	DISSOU(HD,NSOURCE) mtphy.f
+		[STTRANS blms.f]
+		[BLMS blms.f]
+			[STAREA blms.f]
+				[PLTXY blms.f]
+				[TRANS blms.f]
+			[STMSAR blms.f]
+				[PLTXY blms.f]
+				[TRANS blms.f]
+			[INP2DP blms.f]
+			[MESH blms.f]
+				[INTDEP blms.f]
+					[WHERE1 blms.f]
+					[BSVALI blms.f]
+						[BSPLINE blms.f]
+					[BSPARI blms.f]
+				[MNEWT blms.f]
+					[AREA2 blms.f]
+					[INTDEP blms.f]
+						[WHERE1 blms.f]
+						[BSVALI blms.f]
+							[BSPLINE blms.f]
+						[BSPARI blms.f]
+				[AREA2 blms.f]
+				[MNEWT blms.f]
+					[AREA2 blms.f]
+					[INTDEP blms.f]
+						[WHERE1 blms.f]
+						[BSVALI blms.f]
+							[BSPLINE blms.f]
+						[BSPARI blms.f]
+			[STMSAR2 blms.f]
+				[PLTXY blms.f]
+				[TRANS blms.f]
+			[MESHSS blms.f]
+	SOURCE(HD,IUS,JUST,MLG,LS,IU) mtphy.f
+		[BSPARI blms.f]
+		[BSVALI blms.f]
+			[BSPLINE blms.f]
+		FSNPA(WE,SA,SB,XP,YP,ZP,IS,IT) mtphy.f
+		[TRANS blms.f]
+		SVESE(Q,CM,BSV,IDB,LS,NOD2) mtphy.f
+
+
+
+!== gdjacfw.f はここのみ。その他、ctpin.f blms.f jaclib.f
+GDJACFW gdjacfw.f
+	[SETA ctpin.f]
+		[PLTXY blms.f]
+	[OBSPO jaclib.f]
+	[SETFCP ctpin.f]
+	[STTRANS blms.f]
+	[BLMS blms.f]
+		[STAREA blms.f]
+			[PLTXY blms.f]
+			[TRANS blms.f]
+		[STMSAR blms.f]
+			[PLTXY blms.f]
+			[TRANS blms.f]
+		[INP2DP blms.f]
+		[MESH blms.f]
+			[INTDEP blms.f]
+				[WHERE1 blms.f]
+				[BSVALI blms.f]
+					[BSPLINE blms.f]
+				[BSPARI blms.f]
+			[MNEWT blms.f]
+				[AREA2 blms.f]
+				[INTDEP blms.f]
+					[WHERE1 blms.f]
+					[BSVALI blms.f]
+						[BSPLINE blms.f]
+					[BSPARI blms.f]
+			[AREA2 blms.f]
+			[MNEWT blms.f]
+				[AREA2 blms.f]
+				[INTDEP blms.f]
+					[WHERE1 blms.f]
+					[BSVALI blms.f]
+						[BSPLINE blms.f]
+					[BSPARI blms.f]
+		[STMSAR2 blms.f]
+			[PLTXY blms.f]
+			[TRANS blms.f]
+		[MESHSS blms.f]
+	[BIBSP jaclib.f]
+		[BSPLINE blms.f]
+	[OUTPAR jaclib.f]
+	JACOBIFW(IU) gdjacfw.f
+		[HORDS jaclib.f]
+			[MKKN jaclib.f]
+		[DSITRNS jaclib.f]
+			[TRANS blms.f]
+		[OUTJC jaclib.f]
+		[VERDS jaclib.f]
+			[MKKN jaclib.f]
+		[OUTJC jaclib.f]
+
+!== gdfwd.f で完結
+GDFWD gdfwd.f
+	SETCPFW(HD,FL31,FMP,FWD,NSOURCE) ctpin.f
+	GRDPO(IU) gdfwd.f
+	SETUPFW(FL31,NSOURCE,IU) gdfwd.f
+	INFCJ(CJA,FL31,JUST,NBI,JSF,LS,IU) gdfwd.f
+	INSOL(HD,NSOURCE,IU) gdfwd.f
+	FORWARD(NSOURCE) gdfwd.f
+	OUTFWD(HD,IU) gdfwd.f
+
+
+
+
+ mkbd.f:      subroutine mkmsh(x1,y1,x2,y2,div,rmh,bx,by,ifg,nc)
+ mkbd.f:      subroutine dv2xy(d,v,x,y)
+ mkbd.f:      subroutine vincen(y1,x1,y2,x2,d,ang)
+
+ mkrgn.f:      subroutine vincen(y1,x1,y2,x2,d,ang)
+ 
+
+
+ outdat.f:      SUBROUTINE OUTDAT(HD)
+
+ outfmp.f:      SUBROUTINE INITIAL
+ outfmp.f:      SUBROUTINE SETUP(FL3,NSOURCE,ICM)
+ outfmp.f:      SUBROUTINE SABICM(ICM,ISEL)
+ outfmp.f:      SUBROUTINE FREEMIN(DETF,RSQ2,JDATA,JCT,JMT)
+ outfmp.f:      SUBROUTINE RESET(ALPHA,DETC,JDATA,JCT,JMT)
+ outfmp.f:      SUBROUTINE SETBM(LS,KS0,KT0,NDG,IUS,IBOC,JUST)
+ outfmp.f:      SUBROUTINE INPUTD(IU)
+ outfmp.f:      SUBROUTINE SETAG(KIO,KIS,ITOTAL,IH,IA,IB,IC,NR,NST,AG,ST)
+ outfmp.f:      SUBROUTINE INPUTG(CJA,FL3,JUST,NBI,LS,IU)
+ outfmp.f:      SUBROUTINE SETMP(KS0,KT0,NDG,IUS,JUST,LS)
+ outfmp.f:      SUBROUTINE INNG(RS,NBI,LS,KTYP)
+ outfmp.f:      SUBROUTINE INSL(RSS,NBI,LS)
+ outfmp.f:      SUBROUTINE SETWT
+ outfmp.f:      SUBROUTINE COVAR
+ outfmp.f:      SUBROUTINE DRESID
+ outfmp.f:      SUBROUTINE OUTSOL(HD,FL3,NSOURCE)
+ outfmp.f:      SUBROUTINE OUTDAT(HD)
+
+ sabic2d.f:      SUBROUTINE SABIC2D
+
+ sabicm.f:      SUBROUTINE SABICM(ICM,ISEL)
+
+ scd2xyz.f:      SUBROUTINE  PLTXY (ALAT,ALONG,X,Y,IND)
+
+ xyzcot0g.f:      subroutine ngrv(ic,phai,ramd,ht,grv,rr)
+ xyzcot0g.f:      subroutine vincen(t0,n0,t,n,d)
+ xyzcot0g.f:      subroutine plhxyz(t,n,h,x,y,z)
+
+

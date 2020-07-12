@@ -1,0 +1,258 @@
+INV2D
+	SETA2D
+	SETFC2D
+	STTRANS() blms.f
+		!	(PHI,DELT) => (T11,T12,U11,U12)=(cosPHI,sinPHI,cosDELT,sinDELT)
+	STAREA() blms.f
+	
+		PLTXY(ALAT,ALONG,X,Y,IND) blms.f
+			!C*******************************************************
+			!C     PLTXY TRANSFORMS (X,Y) TO (ALAT,ALONG) IF IND.EQ.1
+			!C     PLTXY TRANSFORMS (ALAT,ALONG) TO (X,Y) IF IND.EQ.0
+			!C  WHEN ICORD.NE.0  PLTXY MAKES NO CHANGE IN TRANSFORMATION  BETWEEN (X,Y) AND (ALAT,ALONG).
+			!C*******************************************************
+		TRANS(U,V,UT,VT,IAB,IND) blms.f
+			!	OUTPUT (UT,VT)
+			!C--------------------------------------------------------
+			!C (IAB,IND)
+			!C (1, 1):  X-Y COODINATE rotation APHI deg counter-clockwisely.
+			!C             Transform from LOCAL COOD. to FAULT COOD.
+			!C (1,-1):  X-Y COODINATE rotation APHI deg clockwisely.
+			!C             Transform from FAULT COOD. to LOCAL COOD.
+			!C (2, 1):  Y-Z COODINATE rotation ADLT deg counter-clockwisely.
+			!C             Transform from FAULT Cood. to ModelSurface COOD.
+			!C (2,-1):  Y-Z COODINATE rotation ADLT deg clockwisely.
+			!C             Transform from ModelSurface COOD. to FAULT COOD>
+			!C--------------------------------------------------------
+	INSURD
+		(PLTXY blms.f)
+		(TRANS blms.f)
+	SETKN
+		WHERE1 blms.f
+		BSVALI blms.f
+			BSPLINE blms.f
+		BSPARI blms.f
+	SETBM2D
+	SABIC2D
+		RESET2D
+		FREE2D
+			QRDEC
+			RINV
+	OUT2DP
+
+INTP2D
+	(SETA2D)
+	(SETFC2D)
+	(STTRANS blms.f)
+	(STAREA blms.f)
+		(PLTXY blms.f)
+		(TRANS blms.f)
+	INP2DP blms.f
+	FC2DF
+		(PLTXY blms.f)
+		(TRANS blms.f)
+		INTDEP blms.f
+			(WHERE1 blms.f)
+			(BSVALI blms.f)
+				(BSPLINE blms.f)
+			(BSPARI blms.f)
+
+GDJAC
+	SETA
+		(PLTXY blms.f)
+	OBSPO
+	SETFCP
+	(STTRANS blms.f)
+	BLMS blms.f
+		(STAREA blms.f)
+			(PLTXY blms.f)
+			(TRANS blms.f)
+		STMSAR blms.f
+			(PLTXY blms.f)
+			(TRANS blms.f)
+		(INP2DP blms.f)
+		MESH blms.f
+			(INTDEP blms.f)
+				(WHERE1 blms.f)
+				(BSVALI blms.f)
+					(BSPLINE blms.f)
+				(BSPARI blms.f)
+			MNEWT blms.f
+				AREA2 blms.f
+				(INTDEP blms.f)
+					(WHERE1 blms.f)
+					(BSVALI blms.f)
+						(BSPLINE blms.f)
+					(BSPARI blms.f)
+			(AREA2 blms.f)
+			(MNEWT blms.f)
+				(AREA2 blms.f)
+				(INTDEP blms.f)
+					(WHERE1 blms.f)
+					(BSVALI blms.f)
+						(BSPLINE blms.f)
+					(BSPARI blms.f)
+		STMSAR2 blms.f
+			(PLTXY blms.f)
+			(TRANS blms.f)
+		MESHSS blms.f
+	BIBSP
+		(BSPLINE blms.f)
+	OUTPAR
+	JACOBI
+		HORDS
+			MKKN
+		DSITRNS
+			(TRANS blms.f)
+		OUTJC
+		VERDS
+			(MKKN)
+		(OUTJC)
+		SLIPM
+			(MKKN)
+		SMITRNS
+			(TRANS blms.f)
+		OUTMSL
+
+GDINV
+	SETCP
+	INPUTD
+		(PLTXY blms.f)
+		SETAG
+	SETUP
+		INITIAL
+		INPUTG
+		SETMP
+		SETBM
+		INSL
+		INNG
+		(INNG)
+	SETWT
+	CHGPM
+	SABICM
+		RESET
+		FREEMIN
+			(QRDEC)
+			(RINV)
+		INEQMIN
+			(RINV)
+			LPDSOL
+				NNLS
+					LSOS
+						(QRDEC)
+						(RINV)
+			(RINV)
+			(QRDEC)
+	DRESID
+	OUTDAT
+	COVAR
+		(RINV)
+	CHGIMP
+	OUTSOL
+	DISSOU
+		(STTRANS blms.f)
+		(BLMS blms.f)
+			(STAREA blms.f)
+				(PLTXY blms.f)
+				(TRANS blms.f)
+			(STMSAR blms.f)
+				(PLTXY blms.f)
+				(TRANS blms.f)
+			(INP2DP blms.f)
+			(MESH blms.f)
+				(INTDEP blms.f)
+					(WHERE1 blms.f)
+					(BSVALI blms.f)
+						(BSPLINE blms.f)
+					(BSPARI blms.f)
+				(MNEWT blms.f)
+					(AREA2 blms.f)
+					(INTDEP blms.f)
+						(WHERE1 blms.f)
+						(BSVALI blms.f)
+							(BSPLINE blms.f)
+						(BSPARI blms.f)
+				(AREA2 blms.f)
+				(MNEWT blms.f)
+					(AREA2 blms.f)
+					(INTDEP blms.f)
+						(WHERE1 blms.f)
+						(BSVALI blms.f)
+							(BSPLINE blms.f)
+						(BSPARI blms.f)
+			(STMSAR2 blms.f)
+				(PLTXY blms.f)
+				(TRANS blms.f)
+			(MESHSS blms.f)
+	SOURCE
+		(BSPARI blms.f)
+		(BSVALI blms.f)
+			(BSPLINE blms.f)
+		FSNPA
+		(TRANS blms.f)
+		SVESE
+
+GDJACFW
+	(SETA)
+		(PLTXY blms.f)
+	(OBSPO)
+	(SETFCP)
+	(STTRANS blms.f)
+	(BLMS blms.f)
+		(STAREA blms.f)
+			(PLTXY blms.f)
+			(TRANS blms.f)
+		(STMSAR blms.f)
+			(PLTXY blms.f)
+			(TRANS blms.f)
+		(INP2DP blms.f)
+		(MESH blms.f)
+			(INTDEP blms.f)
+				(WHERE1 blms.f)
+				(BSVALI blms.f)
+					(BSPLINE blms.f)
+				(BSPARI blms.f)
+			(MNEWT blms.f)
+				(AREA2 blms.f)
+				(INTDEP blms.f)
+					(WHERE1 blms.f)
+					(BSVALI blms.f)
+						(BSPLINE blms.f)
+					(BSPARI blms.f)
+			(AREA2 blms.f)
+			(MNEWT blms.f)
+				(AREA2 blms.f)
+				(INTDEP blms.f)
+					(WHERE1 blms.f)
+					(BSVALI blms.f)
+						(BSPLINE blms.f)
+					(BSPARI blms.f)
+		(STMSAR2 blms.f)
+			(PLTXY blms.f)
+			(TRANS blms.f)
+		(MESHSS blms.f)
+	(BIBSP)
+		(BSPLINE blms.f)
+	(OUTPAR)
+	JACOBIFW
+		(HORDS)
+			(MKKN)
+		(DSITRNS)
+			(TRANS blms.f)
+		(OUTJC)
+		(VERDS)
+			(MKKN)
+		(OUTJC)
+
+GDFWD
+	SETCPFW
+	GRDPO
+	SETUPFW
+	INFCJ
+	INSOL
+	FORWARD
+	OUTFWD
+
+
+
+

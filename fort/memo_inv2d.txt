@@ -1,0 +1,71 @@
+inv2d
+
+装置77 : inv2d.out
+装置 9 : fn = *.ctp (getargで指定)
+
+SUB SETA2D(nsource) << ctpin
+	*.ctp から情報抽出
+
+	(alat0, alng0)
+		ローカル座標の原点
+	icord
+		= 0 : 緯度経度
+		= 1 : xy座標
+
+	nsource
+		断層領域の個数
+
+DO 各断層領域（ls番目）に対して
+
+SUB SETFC2D(ls,flf,fl1,ipl)
+	*.ctp から情報抽出
+
+	flf
+		*.flt
+		緯度経度とそこでの断層面までの深さ（負数）をリストしたファイル
+	fl1
+		*.cof
+		出力ファイル。曲面断層の形状を記述するパラメータ。
+
+	aphi <= BPHI, adlt <= BDLT
+		aphi : 断層の走行の角度（東orX軸より反時計回り）、これが断層座標系のX軸
+		adlt : 平面断層の傾斜角
+
+	alat <= BLAT, alon <= BLON
+	alen <= BLEN, awid <= BWID
+	ku0 <= JU0, kv0 <= JV0, ndeg <= NDGF
+		alat, alon : 曲面定義領域（地表矩形領域）の角
+		alen, awid : 矩形領域の長さ（走行方向）と幅（傾き方向）
+		ku0, kv0 : Bsplineのセグメントの数
+		ndeg : Bsplineの次数（通常は3）
+
+	nod2 = (ndeg +1) * (ndeg +1) = 16
+	ku1 = ku0 + ndeg
+	kv1 = kv0 + ndeg
+
+SUB STTRANS
+	方位座標系から断層座標系に変換する際のパラメータ
+	(t11, t22) = ( cos(aphi), sin(aphi) )
+	(u11, u22) = ( cos(adlt), sin(adlt) )
+
+SUB STAREA
+		SUB PLTXY(alat,alon,x,y,0)
+			方位座標(alat, along) => LOCAL(X,Y) に変換
+			測地系が旧日本測地系のままの可能性あり。
+		SUB TRANS(x,y,xa,ya,1,1)
+			LOCAL(x, y) => 断層(xa, ya) に変換
+	方位座標系から断層座標系に変換
+
+11 flf = *.flt を開いたうえで
+SUB INSURD(11)
+	*.flt の読み込み
+
+	isurf : データ数
+	ala, alg, z (raw) => gx(1:ki) gy(1:ki) gz(1:ki) (TRANS, PLTXY使用)
+		ki = 500 : in prm_matrix
+
+SETKN
+SETBM2D
+SABIC2D
+
+

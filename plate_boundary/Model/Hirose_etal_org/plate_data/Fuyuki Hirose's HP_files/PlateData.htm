@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0062)http://www.mri-jma.go.jp/Dep/sv/2ken/fhirose/ja/PlateData.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS">
+
+<title>
+プレート形状の数値データ
+</title>
+</head>
+<body>
+<h1>
+プレート形状の数値データ
+</h1>
+<pre><font size="3">
+<font size="4"><b>プレート形状の数値データ</b></font>
+<a href="http://www.mri-jma.go.jp/Dep/sv/2ken/fhirose/data/plate_data.tar.gz">plate_data.tar.gz [774 KB]</a>
+<font color="#ff0000"><b>※データを使用した場合には，使用地域に対応した出典論文を正確に明記するようにお願いします．
+ 
+　例：北海道～東北地方の場合
+　　　Kita et al. (2010, EPSL)およびNakajima and Hasegawa (2006, GRL)
+　例：東北地方南部～関東地方の場合
+　　　Nakajima and Hasegawa (2006, GRL)およびNakajima et al. (2009, JGR)</b></font>
+
+
+<font size="4"><b>手順</b></font>
+　<font color="#0000ff">１．ダウンロードし解凍すると「plate_data」フォルダが作成されます．
+　２．contour_map_PHS.gmtでフィリピン海スラブのコンター（contour_map_PHS.ps，<a href="http://www.mri-jma.go.jp/Dep/sv/2ken/fhirose/ja/PHS.html">PHS</a>）が描画されます．（※）
+　３．contour_map_PAC.gmtで太平洋スラブのコンター（contour_map_PAC.ps，<a href="http://www.mri-jma.go.jp/Dep/sv/2ken/fhirose/ja/PAC.html">PAC</a>）が描画されます．（※）</font>
+　<font size="2">※Generic Mapping Tools (GMT)がインストールされていることが前提です．</font>
+
+
+<font size="4"><b>プレート形状データのファイル構成</b></font>
+　<u>太平洋プレート</u>
+　「<b>PAC</b>」：北海道～東北北部<font size="2">［Kita et al. (2010, EPSL)］</font>，
+　　　　 　東北北部～東北南部<font size="2">［Nakajima and Hasegawa (2006, GRL)］</font>，
+　　　　　 関東地方～伊豆弧北部<font size="2">［Nakajima et al. (2009, JGR)］</font>
+
+　　<font size="2">※「PAC」は緯経度0.2度毎の深さデータで構成されているため，GMTのコマンドで補間してコンターを描画しています．</font>
+
+　<u>フィリピン海プレート</u>
+　「<b>sw</b>」：西南日本<font size="2">［Hirose et al. (2008, JGR)］　※紀伊半島の深さ20 kmの等深線［弘瀬・他 (2007, 地震)］を修正．</font>
+　「<b>kanto</b>」：関東地方<font size="2">［弘瀬・他 (2008, 地震)］</font>
+　「<b>izu3</b>」：伊豆の北部延長領域<font size="2">［Nakajima et al. (2009, JGR)］</font>
+　「<b>nakajima</b>」：フィリピン海スラブの深部<font size="2">［Nakajima and Hasegawa (2007, JGR)］</font>
+　「<b>baba</b>」：南海トラフ深さ10 km<font size="2">［Baba et al. (2002, PEPI)］</font>
+</font>
+</pre>
+<font size="2">
+<u>引用文献</u>
+<ul><li>Baba, T., Y. Tanioka, P. R. Cummins, and K. Uhira (2002), The slip distribution of the 1946 Nankai earthquake estimated from tsunami inversion using a new plate model, Phys. Earth Planet. Inter., 132, 59-73.</li>
+<li>弘瀬冬樹・中島淳一・長谷川　昭 (2007), Double-Difference Tomography法による西南日本の３次元地震波速度構造およびフィリピン海プレートの形状の推定, 地震2, 60, 1-20.</li>
+<li>Hirose, F., J. Nakajima, and A. Hasegawa (2008), Three-dimensional seismic velocity structure and configuration of the Philippine Sea slab in southwestern Japan estimated by double-difference tomography, J. Geophys. Res., 113, B09315, doi:10.1029/2007JB005274.</li>
+<li>弘瀬冬樹・中島淳一・長谷川　昭 (2008), Double-Difference Tomography法による関東地方の３次元地震波速度構造およびフィリピン海プレートの形状の推定, 地震2, 60, 123-138.</li>
+<li>Kita, S., T. Okada, A. Hasegawa, J. Nakajima, and T. Matsuzawa (2010), Anomalous deepening of a seismic belt in the upper-plane of the double seismic zone in the Pacific slab beneath the Hokkaido corner: Possible evidence for thermal shielding caused by subducted forearc crust materials, Earth Planet. Science Lett., 290, 415-426.</li>
+<li>Nakajima, J., and A. Hasegawa (2006), Anomalous low-velocity zone and linear alignment of seismicity along it in the subducted Pacific slab beneath Kanto, Japan: Reactivation of subducted fracture zone?, Geophys. Res. Lett., 33, L16309, doi: 10.1029/2006GL026773.</li>
+<li>Nakajima, J., and A. Hasegawa (2007), Subduction of the Philippine Sea plate beneath southwestern Japan: Slab geometry and its relationship to arc magmatism, J. Geophys. Res., 112, B08306, doi:10.1029/2006JB004770.</li>
+<li>Nakajima, J., F. Hirose, and A. Hasegawa (2009), Seismotectonics beneath the Tokyo metropolitan area, Japan: Effect of slab-slab contact and overlap on seismicity, J. Geophys. Res., 114, B08309, doi:10.1029/2008JB006101.</li>
+</ul>
+</font>
+
+
+</body></html>
