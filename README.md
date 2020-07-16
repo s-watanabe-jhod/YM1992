@@ -2,7 +2,7 @@
 
 ## Citation
 
-Yabuki, T. and M. Matsu'ura (1992): A geodetic data inversion using a Bayesian information criterion for spatial distribution of fault slip, *Geophys. J. Int.* **109**, 363-375
+Yabuki, T. and M. Matsu'ura (1992): A geodetic data inversion using a Bayesian information criterion for spatial distribution of fault slip, *Geophys. J. Int.* **109**, 363-375, <https://doi.org/10.1111/j.1365-246X.1992.tb00102.x>
 
 ## Directories
 
