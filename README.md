@@ -1,4 +1,8 @@
-# Geodetic inversion README
+# Geodetic data inversion tool proposed by Yabuki and Matsu'ura (1992)
+
+## Note
+
+This Fortran 90 code is the translation of the original F77 code written by T. Yabuki. 
 
 ## Citation
 
