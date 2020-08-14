@@ -10,7 +10,7 @@ This Fortran 90 code is the translation of the original F77 code written by T. Y
 Yabuki, T. and M. Matsu'ura (1992): A geodetic data inversion using a Bayesian information criterion for spatial distribution of fault slip, *Geophys. J. Int.* **109**, 363-375, <https://doi.org/10.1111/j.1365-246X.1992.tb00102.x>
 
 ### for the code
-Shun-ichi Watanabe, Yusuke Yokota, Yuto Nakamura, & Tetsuichiro Yabuki. (2020, August 14). s-watanabe-jhod/YM1992 (Version v1.0.0). Zenodo. http://doi.org/10.5281/zenodo.3984875
+Shun-ichi Watanabe, Yusuke Yokota, Yuto Nakamura, & Tetsuichiro Yabuki. (2020, August 14). YM1992 v1.0.0. Zenodo. http://doi.org/10.5281/zenodo.3984875
 
 ## Directories
 
